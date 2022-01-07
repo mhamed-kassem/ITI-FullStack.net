@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ES6 -1</title>
+</head>
+
+<body>
+    <script>
+        function sum(num1, num2) {
+            return num1 + num2;
+        }
+
+        function prompt2num() {
+            var num1 = parseInt(prompt('Enter a number'));
+            var num2 = parseInt(prompt('Enter a number'));
+            (function () {
+                alert(sum(num1, num2));
+            })();
+        }
+
+        //prompt2num();
+        //----------------------------------------
+
+        var myary = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        //---odd--filter--arrow-function--
+        var oddNumbers = myary.filter((a) => {
+            return a % 2 != 0;
+        });
+        console.log('odd numbers', oddNumbers);
+        //---even--foreach--arrow-function--
+        var evenNumbers=[]; 
+        myary.forEach((num) => {
+            if (num % 2 == 0) evenNumbers.push(num);
+        });
+        console.log('even numbers', evenNumbers);
+        //---square--map--arrow-function
+        var squaredNumbers = myary.map((num) => {
+            return num * num;
+        });
+        console.log('squared numbers', squaredNumbers);
+        //---difference-arrow-literal-function-own-context-
+        class MyObject {
+            age = 40;
+            constructor(name) {
+                this.name = name;
+
+            }
+            printdata() {
+                console.log(this.name + ' arrow:', (() => {
+                    return this.age;
+                })());
+
+                console.log(this.name + ' literal:', (function () {
+                    //return this.age; //show error undefined
+                })());
+
+            }
+        }
+
+        var anInstance = new MyObject('mohamed');
+        anInstance.printdata();
+
+        //---for-in--for-of---------
+        for (const index in myary) {
+
+            const element = myary[index];
+            console.log(element + ' in index: ' + index);
+        }
+        for (const iterator of myary) {
+            console.log(iterator + ' is value of index:' + myary.indexOf(iterator));
+        }
+        //---spread-operator-(...)---
+        console.log(...myary);
+
+        //---class---
+        class Student {
+            name;   //public
+            University;
+            faculty;
+            final_grade;
+
+            printStudent() {
+                console.log(`${this.name} is a student in faculty of ${this.faculty} in university ${this.university}
+And his final grad is ${this.final_grad}`);
+
+            }
+
+        }
+
+        //---set-data-structure---
+        /**
+         * Set objects are collections of values. 
+         * You can iterate through the elements of a set in insertion order. 
+         * A value in the Set may only occur once; it is unique in the Set's collection.
+         * new Set("Firefox")  // Set(7) { "F", "i", "r", "e", "f", "o", "x" }
+         * new Set("firefox")  // Set(6) { "f", "i", "r", "e", "o", "x" } 
+         * 
+         * mySet1.add(1)
+         * mySet1.has(5)
+         * mySet1.delete(5)
+         * mySet1.size 
+         * for (let item of mySet1.keys()) console.log(item)
+         * for (let item of mySet1.values()) console.log(item)
+         * for (let [key, value] of mySet1.entries()) console.log(key)
+         * for (let item of mySet1) console.log(item)
+         * mySet2.forEach(function(value) {console.log(value)})
+         * const myArr = Array.from(mySet1)
+         * console.log([...new Set(myArr)])
+         * intersect can be simulated via
+         * const intersection = new Set([...mySet1].filter(x => mySet2.has(x)))
+         * difference can be simulated via
+         * const difference = new Set([...mySet1].filter(x => !mySet2.has(x)))
+         * 
+         * 
+         **/
+        //----------------------
+        var myset = new Set();
+        myset.add('mohamed');
+        myset.add('kassem');
+        myset.add('kassem'); //repeated value don`t added
+        myset.add('ahmed');
+        myset.add('mahmoud');
+        console.log(myset.size, myset.has('kassem'), myset.delete('mohamed'), ...myset) //4, true, true, all values
+
+        for (let item of myset.keys()) console.log(item)
+        for (let item of myset.values()) console.log(item)
+        for (let [key, value] of myset.entries()) console.log(key, value)
+        for (let item of myset) console.log(item)
+        myset.forEach(function (value) { console.log(value) })
+        //-----generator--------------
+        function* tips() {
+            var jsTips = [' Don’t forget var keyword when assigning a variable’s value for the first time',
+                'undefined, null, 0, false, NaN,empty string are all falsy',
+                ' Use Semicolons for line termination',
+                'do not forget that typeof null will return object',
+                'Recognize and remove duplicate code',
+                'Comment your code often',
+                'Be efficient with DOM manipulations',
+                'Use Strict Mode to catch silent errors',
+                'The scope of a variable defined with var is function scope or declared outside any function, global',
+                'The scope of a variable defined with let is block scope.'];
+
+            // var todayTip = jsTips[Math.floor(Math.random() * jsTips.length)];
+             var indx =0
+            while (true) {
+                if (indx==9){indx=0} 
+                yield jsTips[indx];
+                indx++;
+            }
+
+        }
+
+        var mygenerator = tips();
+        for (let index = 0; index < 15; index++) {
+            console.log(mygenerator.next().value);
+        }
+
+        //----------------------------------
+
+
+    </script>
+
+</body>
+
+</html>
