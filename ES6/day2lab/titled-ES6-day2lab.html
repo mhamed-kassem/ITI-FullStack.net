@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ES6 -2</title>
+    <style>
+        label {
+            color: coral;
+        }
+    </style>
+</head>
+
+<body onload="menuoptions()">
+    <div
+        style="width:fit-content; font-size: x-large; padding: 1%; margin-left: 20%; border: aqua 3px solid; background-color: aquamarine;">
+        <fieldset>
+            <legend>Profile</legend>
+            <label id="name" style="color:brown; font: 1em sans-serif;"></label><br><br>
+            Email: <label id="email"></label><br><br>
+            Phone: <label id="phone"></label><br><br>
+            website: <label id="website"></label><br><br>
+            City: <label id="city"></label><br><br>
+            Company: <label id="comName"></label><br><br>
+
+        </fieldset>
+
+        <select name="usr" id="usrs" onchange="updateUi(xmlusers[this.value]);">
+        </select>
+        <br><br>
+        <input type="number" name="id" id="id" onblur="requestuser(this.value)">
+
+
+    </div>
+    <script>
+
+        //------------------AJAX XML HTTP Resquest-----------------
+        var xmlsrvr = new XMLHttpRequest();
+        var xmlusers;
+
+        function old_getuser(cmethod, id) {
+            console.log(id + 'called');
+            xmlsrvr.onreadystatechange = function () {
+                if (xmlsrvr.readyState == 4 && xmlsrvr.status == 200) {
+                    console.log(JSON.parse(xmlsrvr.responseText));
+                    console.log('get data and call ' + cmethod);
+                    cmethod(JSON.parse(xmlsrvr.responseText));
+                }
+            };
+            if (id === undefined) {
+                xmlsrvr.open('GET', 'https://jsonplaceholder.typicode.com/users', false);
+            } else {
+                xmlsrvr.open('GET', 'https://jsonplaceholder.typicode.com/users/' + id, false);
+            }
+            xmlsrvr.send();
+
+        }
+
+        async function getuser(callbackF, id) {
+            var myurl;
+            var myusers;
+            if (id === undefined) {
+                myurl = 'https://jsonplaceholder.typicode.com/users';
+            } else {
+                myurl = 'https://jsonplaceholder.typicode.com/users/' + id;
+            }
+
+            try {
+                const response = await fetch(myurl);
+                myusers = await response.json();
+            } catch (error) {
+                console.log('I catched this  error: ' + error);
+                return 0;
+            }
+
+            callbackF(myusers);
+
+
+        }
+
+        function requestuser(num) {
+            if (num > 0 && num < 10) {
+                console.log('request one user started');
+                getuser(updateUi, num);
+                console.log('request one user ended');
+                //console.log(num+':id of==>'+getuser(num));
+                //console.log(localStorage.getItem('xmlresponse'))
+                //let userobject = JSON.parse(localStorage.getItem('oneuser')).data;
+                //updateUi(userobject);
+            }
+        }
+        function updateUi(myobject) {
+            console.log('update ui here');
+            console.log(myobject);
+
+            document.getElementById('name').innerHTML = myobject.name;
+            document.getElementById('email').innerHTML = myobject.email;
+            document.getElementById('phone').innerHTML = myobject.phone;
+            document.getElementById('website').innerHTML = myobject.website;
+            document.getElementById('city').innerHTML = myobject.address.city;
+            document.getElementById('comName').innerHTML = myobject.company.name;
+
+        }
+        function menuoptions() {
+            console.log('menu options started');
+            getuser(setMenuItems);
+            console.log('menu options ended');
+            //xmlusers = JSON.parse(localStorage.getItem('users')).data;
+            //console.log(xmlusers);
+        }
+        function setMenuItems(myUsers) {
+            console.log('set menu items here');
+            console.log(myUsers);
+            xmlusers = myUsers;
+            var mymenu = document.getElementById('usrs');
+            xmlusers.forEach(xusr => {
+                mymenu.innerHTML += '<option value="' + (xusr.id - 1) + '">' + xusr.name + ' </option>';
+            });
+        }
+
+        async function submitpost() {
+            var myreturn;
+            try {
+                const confirmation = await fetch('https://jsonplaceholder.typicode.com/posts', {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        title: 'foo',
+                        body: 'bar',
+                        userId: 1
+                    })
+                });
+                
+                myreturn= await confirmation.json();
+                
+            } catch (error) {
+                console.log('I catch error while posting data '+error);
+                return 0;
+            }
+
+            return myreturn;
+
+        }
+
+        console.log('end of script call request user');
+        requestuser(2);
+
+        console.log(submitpost());
+
+
+    </script>
+
+</body>
+
+</html>
